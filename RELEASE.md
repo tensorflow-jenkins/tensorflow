@@ -12,6 +12,18 @@ This enables writing forward compatible code: by explicitly importing either `te
 * Adds `enable_tensor_equality()`, which switches the behavior such that: 
   * Tensors are no longer hashable.
   * Tensors can be compared with == and !=, yielding a Boolean Tensor with element-wise comparison results. This will be the default behavior in 2.0.
+* Auto Mixed-Precision graph optimizer simplifies converting models to float16 for acceleration on Volta and Turing Tensor Cores. This feature can be enabled by wrapping an optimizer class with `tf.train.experimental.enable_mixed_precision_graph_rewrite()`.
+* Add environment variable TF_CUDNN_DETERMINISTIC. Setting to "true" or "1" forces the selection of deterministic cuDNN convolution and max-pooling algorithms. When this is enabled, the algorithm selection procedure itself is also deterministic.
+* TensorRT
+  * Migrate TensorRT conversion sources from contrib to compiler directory
+    in preparation for TF 2.0.
+  * Add additional, user friendly `TrtGraphConverter` API for TensorRT
+    conversion.
+  * Expand support for TensorFlow operators in TensorRT conversion (e.g.
+    `Gather`, `Slice`, `Pack`, `Unpack`, `ArgMin`, `ArgMax`,
+    `DepthSpaceShuffle`). 
+  * Support TensorFlow operator `CombinedNonMaxSuppression` in TensorRT
+    conversion which significantly accelerates object detection models.
 
 ## Breaking Changes
 * Tensorflow code now produces 2 different pip packages: tensorflow_core containing all the code (in the future it will contain only the private implementation) and tensorflow which is a virtual pip package doing forwarding to tensorflow_core (and in the future will contain only the public API of tensorflow). We don't expect this to be breaking, unless you were importing directly from the implementation.
@@ -78,6 +90,7 @@ This enables writing forward compatible code: by explicitly importing either `te
 * Added support for `FusedBatchNormV3` in converter.
 * A ragged to dense op for directly calculating tensors.
 * Fix accidental quadratic graph construction cost in graph-mode `tf.gradients()`.
+* The `precision_mode` argument to `TrtGraphConverter` is now case insensitive.
 
 ## Thanks to our Contributors
 
